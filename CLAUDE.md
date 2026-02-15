@@ -5,23 +5,23 @@
 ## 프로젝트 구조
 
 - `src/publishers/` — SNS 퍼블리셔 (X, Threads, YouTube)
-- `src/blog/` — 블로그 퍼블리셔 (Hugo, Dev.to, Hashnode, Medium) + 번역 자동화
+- `src/blog/` — 블로그 퍼블리셔 (Hugo) + 번역 자동화
 - `src/models/` — Pydantic 데이터 모델
 - `src/formatter/` — 플랫폼별 콘텐츠 포맷 변환
 - `src/utils/` — 인증, S3 업로드, 로깅
 - `blog-site/` — Hugo 블로그 저장소 (한/영 다국어)
 - `config/` — 설정 파일 (API 키는 환경변수 또는 .env 사용)
 
-## 채널 구성 (총 10채널)
+## 채널 구성 (총 7채널)
 
 - **Buffer (3)**: LinkedIn, Instagram, Facebook
 - **Python SNS (3)**: X (Twitter), Threads, YouTube
-- **Python 블로그 (4)**: Hugo+GitHub Pages (본진), Dev.to, Hashnode, Medium (크로스포스팅)
+- **Python 블로그 (1)**: Hugo+GitHub Pages (본진)
 
 ## 핵심 전략
 
-- Hugo 블로그가 본진. 크로스포스팅 시 canonical URL을 Hugo 블로그로 지정
-- 한글 원문 → DeepL API로 영문 자동 번역 → 한/영 동시 게시
+- Hugo 블로그가 본진. SNS에서 블로그 링크를 공유하여 트래픽 유입
+- 한글 원문 → Claude Code `-p` 옵션으로 영문 자동 번역 → 한/영 동시 게시 (추가 비용 없음)
 - 블로그 이미지는 AWS S3 (`rex-blog-assets` 버킷) 사용
 
 ## 기술 스택

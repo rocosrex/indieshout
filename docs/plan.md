@@ -28,30 +28,23 @@
 ## Phase 5: Hugo 블로그 세팅 (3~4일)
 - [ ] Hugo 설치 및 테마 선정
 - [ ] 다국어 설정 (한글/영문) — config.toml languages 설정
-- [ ] GitHub Pages 연결 및 커스텀 도메인 설정 (Cloudflare Registrar)
+- [ ] GitHub Pages 연결 및 커스텀 도메인 설정 (Gabia DNS)
 - [ ] GitHub Actions 자동 빌드/배포 워크플로우 작성
 - [ ] S3 이미지 버킷 생성 (rex-blog-assets)
 - [ ] HugoPublisher 구현: 마크다운 파일 생성 → Git commit/push 자동화
 
 ## Phase 6: 번역 자동화 (2~3일)
-- [ ] DeepL API Free 연동 (translator.py)
+- [ ] Claude Code `-p` 옵션 기반 번역 구현 (translator.py)
 - [ ] 한글 마크다운 → 영문 마크다운 자동 변환
 - [ ] Front matter (제목, 태그 등) 자동 번역
-- [ ] Claude API 폴백 옵션 구현
 
-## Phase 7: 블로그 크로스포스팅 (3~4일)
-- [ ] Dev.to Publisher 구현 (REST API, canonical URL 포함)
-- [ ] Hashnode Publisher 구현 (GraphQL API, canonical URL 포함)
-- [ ] Medium Publisher 구현 (REST API, canonical URL 포함)
-- [ ] 마크다운 → 각 플랫폼 포맷 변환 (이미지 URL, 코드블록 등)
-
-## Phase 8: 통합 및 마무리 (2~3일)
+## Phase 7: 통합 및 마무리 (2~3일)
 - [ ] 멀티 퍼블리셔 오케스트레이터 완성 (SNS + 블로그 통합)
 - [ ] 에러 핸들링 및 재시도 로직
 - [ ] 게시 결과 리포트 (성공/실패 요약)
 - [ ] README 작성 및 사용법 문서화
 
-## Phase 9: 고도화 (선택)
+## Phase 8: 고도화 (선택)
 - [ ] 예약 게시 기능 (APScheduler)
 - [ ] 웹 UI 대시보드 (Streamlit 또는 FastAPI)
 - [ ] 콘텐츠 템플릿 시스템

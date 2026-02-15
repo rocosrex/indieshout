@@ -4,7 +4,7 @@
 
 - **Buffer 무료 플랜 (3채널)**: 인증이 까다로운 SNS 플랫폼 담당
 - **Python 자체 개발 — SNS (3채널)**: API 접근이 용이하거나 Buffer가 지원하지 않는 플랫폼 담당
-- **Python 자체 개발 — 블로그 (4채널)**: Hugo 본진 블로그 + 해외 블로그 크로스포스팅
+- **Python 자체 개발 — 블로그 (1채널)**: Hugo 본진 블로그
 - **다국어 지원**: 한글 원문 → 영문 자동 번역 → 한/영 동시 게시
 
 ## 채널 상세
@@ -21,24 +21,24 @@
 
 | # | SNS | 용도 | Python 선택 이유 | 개발 난이도 |
 |---|-----|------|-----------------|------------|
-| 1 | **X (Twitter)** | 개발 일지, 기술 팁, 빠른 업데이트 | `tweepy` + 무료 API tier로 가장 쉬움 | ★★☆ |
+| 1 | **X (Twitter)** | 개발 일지, 기술 팁, 빠른 업데이트 | `tweepy` + Pay-Per-Use API | ★★☆ |
 | 2 | **Threads** | Instagram 연동, 캐주얼 텍스트 콘텐츠 | Meta가 2024년 API 공개. REST 호출로 비교적 단순 | ★★☆ |
 | 3 | **YouTube** | Shorts, 게임 플레이, 개발 브이로그 | 영상 업로드는 Buffer로도 제한적. 직접 제어가 유연 | ★★☆ |
 
-### Python 블로그 채널 (4개)
+### Python 블로그 채널 (1개)
 
 | # | 블로그 | 역할 | API 방식 | 비용 | 개발 난이도 |
 |---|--------|------|---------|------|------------|
-| 1 | **Hugo + GitHub Pages** | 🏠 **본진 블로그** (한/영 다국어) | Git push → GitHub Actions 자동 빌드/배포 | 도메인만 ~$10.44/년 | ★★☆ |
-| 2 | **Dev.to** | 크로스포스팅 (영문) | REST API (게시/수정 지원) | 무료 | ★☆☆ |
-| 3 | **Hashnode** | 크로스포스팅 (영문) | GraphQL API (게시/수정 지원) | 무료 | ★★☆ |
-| 4 | **Medium** | 크로스포스팅 (영문) | REST API (게시만, 수정 미지원) | 무료 | ★☆☆ |
+| 1 | **Hugo + GitHub Pages** | 🏠 **본진 블로그** (한/영 다국어) | Git push → GitHub Actions 자동 빌드/배포 | 도메인 보유 (myrestaurant.com) | ★★☆ |
 
 ### 제외된 채널
 
 | 플랫폼 | 제외 사유 |
 |--------|----------|
-| **네이버 블로그** | 공식 API 없음, 봇 탐지 → 계정 제재 리스크. 구글 SEO 효과 없음. 필요 시 수동 게시 |
+| **Dev.to** | 크로스포스팅 효과 대비 개발 비용 과다. canonical URL이 무시되어 본진 SEO를 오히려 뺏길 위험 |
+| **Hashnode** | Dev.to와 독자층 겹침. Hugo 본진이 있으면 역할 중복 |
+| **Medium** | API 2023년 지원 중단 (deprecated). 언제 동작 멈출지 불확실 |
+| **네이버 블로그** | 공식 API 없음, 봇 탐지 → 계정 제재 리스크. 구글 SEO 효과 없음 |
 | **Velog** | 게시 API 미제공. 수익화 불가 (광고 수익 100% Velog가 가져감) |
 | **티스토리** | 카카오 운영 (사용 거부). 카카오 자체 광고 강제 삽입 |
 
@@ -48,7 +48,7 @@
 
 | 플랫폼 | API | Python 라이브러리 | 인증 방식 | 비고 |
 |--------|-----|------------------|----------|------|
-| X (Twitter) | X API v2 | `tweepy` | OAuth 2.0 | 무료 tier: 월 1,500 트윗 |
+| X (Twitter) | X API v2 | `tweepy` | OAuth 2.0 | Pay-Per-Use (2026.02~ Free tier 폐지) |
 | Threads | Threads API | `httpx` REST 직접 호출 | OAuth 2.0 (Meta) | 2024년 공개 API |
 | YouTube | YouTube Data API v3 | `google-api-python-client` | OAuth 2.0 (Google) | 영상/Shorts 업로드 |
 
@@ -57,9 +57,6 @@
 | 플랫폼 | API | 방식 | 인증 | 비고 |
 |--------|-----|------|------|------|
 | Hugo + GitHub Pages | Git CLI / GitHub API | 마크다운 → `git push` → GitHub Actions 빌드 | SSH Key 또는 PAT | 한/영 다국어 |
-| Dev.to | REST API | `httpx` POST/PUT | API Key (헤더) | 게시 + 수정 지원 |
-| Hashnode | GraphQL API | `httpx` POST (GraphQL) | Personal Access Token | 게시 + 수정 지원 |
-| Medium | REST API | `httpx` POST | Integration Token | 게시만 (수정 미지원) |
 
 ### 공통 라이브러리
 
@@ -74,9 +71,8 @@
 
 ### 번역 자동화 (한글 → 영문)
 
-- **DeepL API Free**: 무료 (50만자/월, 블로그 글 월 250편 분량) — 1차 선택
-- **Claude API (Sonnet)**: ~$0.003~0.01/글 — 기술 글 번역 품질 우수, 대안
-- **Google Translate API**: $20/100만자 — 비상용
+- **Claude Code `-p` 옵션**: 기존 Claude Code 구독에 포함, 추가 API 비용 없음
+- Python에서 `subprocess.run(["claude", "-p", ...])` 으로 호출
 
 ## 프로젝트 구조
 
@@ -101,10 +97,7 @@ indieshout/
 │   │   ├── __init__.py
 │   │   ├── base.py              # 추상 베이스 클래스 (BlogPublisher)
 │   │   ├── hugo.py              # Hugo 마크다운 생성 + Git push 배포
-│   │   ├── devto.py             # Dev.to REST API 게시
-│   │   ├── hashnode.py          # Hashnode GraphQL API 게시
-│   │   ├── medium.py            # Medium REST API 게시
-│   │   └── translator.py        # 한글 → 영문 번역 자동화
+│   │   └── translator.py        # 한글 → 영문 번역 자동화 (Claude Code -p)
 │   ├── formatter/
 │   │   ├── __init__.py
 │   │   └── content_formatter.py # 플랫폼별 콘텐츠 포맷 변환
@@ -130,19 +123,36 @@ indieshout/
 
 ## 핵심 설계
 
+### 콘텐츠 타입
+
+| 타입 | 대상 채널 | 내용 |
+|------|----------|------|
+| **blog** | Hugo + SNS | 긴 글 게시 → SNS에 요약+링크 자동 공유 |
+| **sns** | X, Threads (+ Buffer 채널) | 짧은 독립 글 (개발 일지, 팁, 근황 등) |
+
+- `blog` 타입: 블로그 게시 후 SNS에 요약+링크를 자동 생성하여 공유
+- `sns` 타입: 블로그 없이 SNS 채널에만 짧은 글 직접 게시
+
 ### 콘텐츠 데이터 모델
 
 ```python
+from enum import Enum
 from pydantic import BaseModel
 from typing import Optional
 
+class ContentType(str, Enum):
+    BLOG = "blog"                          # 블로그 포스트 (긴 글) → SNS 요약+링크 자동 공유
+    SNS = "sns"                            # SNS 전용 (짧은 글)
+
 class Content(BaseModel):
+    content_type: ContentType              # 콘텐츠 타입 (blog / sns)
     text: str                              # 본문 텍스트
     image_paths: Optional[list[str]] = None  # 이미지 파일 경로
     video_path: Optional[str] = None        # 영상 파일 경로
     tags: Optional[list[str]] = None        # 해시태그
     platforms: list[str]                    # 게시 대상 플랫폼 목록
     title: Optional[str] = None            # YouTube/블로그용 제목
+    sns_text: Optional[str] = None         # SNS 공유용 짧은 요약 (blog 타입일 때 사용)
     scheduled_at: Optional[str] = None     # 예약 게시 시간 (ISO 8601)
 ```
 
@@ -223,21 +233,11 @@ youtube:
 hugo:
   blog_repo_path: "./blog-site"
   content_dir: "content/posts"
-  base_url: "https://rex.dev"
+  base_url: "https://myrestaurant.com"
   languages: ["ko", "en"]
   default_language: "ko"
   git_remote: "origin"
   git_branch: "main"
-
-devto:
-  api_key: "YOUR_DEVTO_API_KEY"
-
-hashnode:
-  token: "YOUR_HASHNODE_TOKEN"
-  publication_id: "YOUR_PUBLICATION_ID"
-
-medium:
-  integration_token: "YOUR_MEDIUM_TOKEN"
 
 # === 이미지 CDN (AWS S3) ===
 s3:
@@ -247,8 +247,7 @@ s3:
 
 # === 번역 설정 ===
 translator:
-  provider: "deepl"
-  deepl_api_key: "YOUR_DEEPL_API_KEY"
+  provider: "claude-code"           # claude -p 옵션 사용 (추가 API 비용 없음)
   source_lang: "ko"
   target_lang: "en"
 
