@@ -36,7 +36,7 @@
 
 ## 기술 스택
 
-- Python 3.11+, pip + pyproject.toml
+- Python 3.12+, uv + pyproject.toml
 - httpx, pydantic, pyyaml, tweepy, boto3, gitpython
 - Hugo (정적 사이트 생성), GitHub Pages (호스팅), GitHub Actions (CI/CD)
 
@@ -44,10 +44,10 @@
 
 ```bash
 # 의존성 설치
-pip install -r requirements.txt
+uv sync
 
 # 테스트 실행
-pytest tests/
+uv run pytest tests/
 
 # Hugo 로컬 서버 (블로그 미리보기)
 cd blog-site && hugo server -D

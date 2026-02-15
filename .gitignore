@@ -28,3 +28,7 @@ Thumbs.db
 
 # uv
 .python-version
+
+# Secrets
+.env
+config/config.yaml

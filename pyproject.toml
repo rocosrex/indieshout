@@ -1,16 +1,27 @@
 [project]
 name = "indieshout"
 version = "0.1.0"
-description = "Add your description here"
+description = "1인 개발자 마케팅을 위한 SNS + 블로그 멀티 퍼블리셔"
 readme = "README.md"
 authors = [
     { name = "rocosrex", email = "rocos.rex@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "click>=8.1",
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+]
 
 [project.scripts]
-indieshout = "indieshout:main"
+indieshout = "indieshout.main:cli"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.10.2,<0.11.0"]

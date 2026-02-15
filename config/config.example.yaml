@@ -1,0 +1,42 @@
+# === SNS 채널 API 설정 ===
+twitter:
+  api_key: "YOUR_API_KEY"
+  api_secret: "YOUR_API_SECRET"
+  access_token: "YOUR_ACCESS_TOKEN"
+  access_token_secret: "YOUR_ACCESS_TOKEN_SECRET"
+
+threads:
+  app_id: "YOUR_APP_ID"
+  app_secret: "YOUR_APP_SECRET"
+  access_token: "YOUR_LONG_LIVED_TOKEN"
+
+youtube:
+  client_id: "YOUR_CLIENT_ID"
+  client_secret: "YOUR_CLIENT_SECRET"
+
+# === 블로그 채널 설정 ===
+hugo:
+  blog_repo_path: "./blog-site"
+  content_dir: "content/posts"
+  base_url: "https://myrestaurant.com"
+  languages: ["ko", "en"]
+  default_language: "ko"
+  git_remote: "origin"
+  git_branch: "main"
+
+# === 이미지 CDN (AWS S3) ===
+s3:
+  bucket_name: "rex-blog-assets"
+  region: "ap-northeast-2"
+  prefix: "posts/"
+
+# === 번역 설정 ===
+translator:
+  provider: "claude-code"
+  source_lang: "ko"
+  target_lang: "en"
+
+# === 기본 설정 ===
+defaults:
+  tags: ["gamedev", "indiedev", "unity3d"]
+  language: "ko"
