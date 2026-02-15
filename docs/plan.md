@@ -1,11 +1,11 @@
 # IndieShout 개발 계획
 
-## Phase 1: 기본 인프라 (1주)
-- [ ] 프로젝트 구조 생성
-- [ ] 데이터 모델 정의 (Pydantic) — ContentType(blog/sns), Content
-- [ ] BasePublisher / BaseBlogPublisher 추상 클래스 구현
-- [ ] 설정 파일 로더 구현 (config.yaml + .env)
-- [ ] CLI 인터페이스 구현 (click 기반)
+## Phase 1: 기본 인프라 (1주) ✅
+- [x] 프로젝트 구조 생성
+- [x] 데이터 모델 정의 (Pydantic) — ContentType(blog/sns), Content
+- [x] BasePublisher / BaseBlogPublisher 추상 클래스 구현
+- [x] 설정 파일 로더 구현 (config.yaml + .env)
+- [x] CLI 인터페이스 구현 (click 기반)
   - `indieshout blog publish <file>`
   - `indieshout sns post <text>` (--image, --platforms 옵션)
 
