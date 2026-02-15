@@ -74,6 +74,73 @@
 - **Claude Code `-p` 옵션**: 기존 Claude Code 구독에 포함, 추가 API 비용 없음
 - Python에서 `subprocess.run(["claude", "-p", ...])` 으로 호출
 
+## 사용자 인터페이스
+
+### 3가지 인터페이스
+
+| 인터페이스 | 용도 | 개발 시점 |
+|-----------|------|----------|
+| **CLI** (`indieshout`) | 터미널에서 직접 명령 실행 | Phase 1 |
+| **Claude Code Skill** (`/publish`, `/sns`) | Claude Code 대화에서 슬래시 명령 | Phase 7 |
+| **Telegram** (OpenClaw pio) | 모바일에서 pio에게 SNS 게시 요청 | 향후 개발 |
+
+### CLI 명령어
+
+```bash
+# 블로그 게시 (번역 → 배포 → SNS 링크 공유)
+indieshout blog publish ./posts/my-post.md
+indieshout blog publish ./posts/my-post.md --platforms x,threads
+
+# SNS 전용 게시
+indieshout sns post "새 게임 업데이트 출시! #gamedev #indiedev"
+indieshout sns post "텍스트" --image ./screenshot.png
+indieshout sns post "텍스트" --platforms x,threads
+```
+
+### Claude Code Skill
+
+Claude Code 대화에서 슬래시 명령으로 사용:
+
+```
+/publish ./posts/my-post.md          → 블로그 게시 (번역 + 배포 + SNS 링크 공유)
+/sns 새 게임 업데이트 출시! #gamedev  → SNS 전용 게시
+```
+
+Skill 정의 파일: `.claude/skills/publish.md`, `.claude/skills/sns.md`
+
+### Telegram (향후)
+
+OpenClaw pio 봇을 통해 Telegram에서 SNS 게시 요청:
+
+```
+Rex → Telegram → pio → Claude Code -p → SNS API → 결과 회신
+```
+
+## Agent 설계
+
+| Agent | 역할 | 호출 방식 |
+|-------|------|----------|
+| **translator** | 한글 마크다운 → 영문 번역 | `claude -p` subprocess |
+| **publisher** | 플랫폼별 게시 실행 + 결과 리포트 | Python 내부 오케스트레이터 |
+
+### translator agent
+
+```python
+# Claude Code -p 로 번역 수행
+subprocess.run(["claude", "-p",
+    "다음 한글 마크다운을 영문으로 번역해. front matter 포함. "
+    "마크다운 문법은 유지해:\n\n{korean_md}"
+], capture_output=True, text=True)
+```
+
+### publisher agent
+
+```python
+# 오케스트레이터가 content_type에 따라 적절한 publisher 호출
+# blog: 번역 → Hugo 배포 → SNS 링크 공유
+# sns: 플랫폼별 포맷 변환 → 직접 게시
+```
+
 ## 프로젝트 구조
 
 ```
@@ -113,6 +180,10 @@ indieshout/
 │   ├── static/
 │   ├── themes/
 │   └── config.toml              # Hugo 설정 (다국어 포함)
+├── .claude/
+│   └── skills/
+│       ├── publish.md              # /publish 슬래시 명령 정의
+│       └── sns.md                  # /sns 슬래시 명령 정의
 ├── tests/
 ├── docs/
 ├── CLAUDE.md

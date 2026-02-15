@@ -24,6 +24,16 @@
 - 한글 원문 → Claude Code `-p` 옵션으로 영문 자동 번역 → 한/영 동시 게시 (추가 비용 없음)
 - 블로그 이미지는 AWS S3 (`rex-blog-assets` 버킷) 사용
 
+## 사용자 인터페이스
+
+| 인터페이스 | 명령 | 용도 |
+|-----------|------|------|
+| **CLI** | `indieshout blog publish <file>` | 블로그 게시 (번역 + 배포 + SNS 공유) |
+| **CLI** | `indieshout sns post <text>` | SNS 전용 게시 |
+| **Claude Code Skill** | `/publish <file>` | 대화에서 블로그 게시 |
+| **Claude Code Skill** | `/sns <text>` | 대화에서 SNS 게시 |
+| **Telegram** | OpenClaw pio에게 메시지 | SNS 게시 (향후 개발) |
+
 ## 기술 스택
 
 - Python 3.11+, pip + pyproject.toml

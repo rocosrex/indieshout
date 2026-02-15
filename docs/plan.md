@@ -2,10 +2,12 @@
 
 ## Phase 1: 기본 인프라 (1주)
 - [ ] 프로젝트 구조 생성
-- [ ] 데이터 모델 정의 (Pydantic)
+- [ ] 데이터 모델 정의 (Pydantic) — ContentType(blog/sns), Content
 - [ ] BasePublisher / BaseBlogPublisher 추상 클래스 구현
-- [ ] 설정 파일 로더 구현
-- [ ] 기본 CLI 인터페이스
+- [ ] 설정 파일 로더 구현 (config.yaml + .env)
+- [ ] CLI 인터페이스 구현 (click 기반)
+  - `indieshout blog publish <file>`
+  - `indieshout sns post <text>` (--image, --platforms 옵션)
 
 ## Phase 2: X (Twitter) 연동 (2~3일)
 - [ ] Twitter Developer Portal 앱 등록 및 API 키 발급
@@ -42,6 +44,9 @@
 - [ ] 멀티 퍼블리셔 오케스트레이터 완성 (SNS + 블로그 통합)
 - [ ] 에러 핸들링 및 재시도 로직
 - [ ] 게시 결과 리포트 (성공/실패 요약)
+- [ ] Claude Code Skill 정의
+  - `/publish` — 블로그 게시 (번역 + 배포 + SNS 링크 공유)
+  - `/sns` — SNS 전용 게시
 - [ ] README 작성 및 사용법 문서화
 
 ## Phase 8: 고도화 (선택)
@@ -50,3 +55,4 @@
 - [ ] 콘텐츠 템플릿 시스템
 - [ ] 게시 이력 DB 저장 (SQLite)
 - [ ] SEO 메타 태그 자동 생성 (Hugo 템플릿)
+- [ ] Telegram 연동 (OpenClaw pio → Claude Code → SNS 게시)
