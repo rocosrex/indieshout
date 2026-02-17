@@ -32,7 +32,7 @@
 - [x] 다국어 설정 (한글/영문) — config.toml languages 설정
 - [x] GitHub Pages 연결 (https://rocosrex.github.io/rex-ai-chronicles/)
 - [x] GitHub Actions 자동 빌드/배포 워크플로우 작성
-- [ ] S3 이미지 버킷 생성 (rex-blog-assets) — 향후 추가
+- [x] S3 이미지 버킷 생성 (rex-ai-chronicles) + S3Uploader 구현
 - [x] HugoPublisher 구현: 마크다운 파일 생성 → Git commit/push 자동화
 
 ## Phase 6: 번역 자동화 (2~3일) ✅

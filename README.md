@@ -11,13 +11,16 @@
 - **Phase 3**: Threads 연동
 - **Phase 5**: Hugo 블로그 세팅
   - 배포: https://rocosrex.github.io/rex-ai-chronicles/
+  - AWS S3 이미지 업로드 (rex-ai-chronicles)
 - **Phase 6**: 번역 자동화 (한글 → 영문)
+- **Phase 7**: 통합 및 Claude Code Skills
 
 ### 📊 통계
 
-- **총 테스트**: 92개 (모두 통과)
+- **총 테스트**: 106개 (모두 통과)
 - **구현된 채널**: X, Threads, Hugo 블로그
 - **다국어**: 한글/영문 자동 번역
+- **이미지 호스팅**: AWS S3 자동 업로드
 
 ---
 
