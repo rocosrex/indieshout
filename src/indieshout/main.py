@@ -2,12 +2,14 @@ import click
 
 from indieshout.formatter.content_formatter import ContentFormatter
 from indieshout.models.content import Content, ContentType
+from indieshout.publishers.threads import ThreadsPublisher
 from indieshout.publishers.twitter import TwitterPublisher
 from indieshout.utils.config import load_config
 from indieshout.utils.logger import setup_logger
 
 PLATFORM_PUBLISHERS = {
     "x": TwitterPublisher,
+    "threads": ThreadsPublisher,
 }
 
 

@@ -37,3 +37,23 @@ class ContentFormatter:
             text = truncated + "..."
 
         return text + tag_suffix
+
+    def _format_threads(self, content: Content) -> str:
+        """Threads 포맷터: 500자 제한, 태그 포함."""
+        max_length = 500
+        tag_suffix = ""
+
+        if content.tags:
+            tag_suffix = "\n\n" + " ".join(f"#{tag}" for tag in content.tags)
+
+        available = max_length - len(tag_suffix)
+        text = content.text
+
+        if len(text) > available:
+            truncated = text[: available - 3]
+            last_space = truncated.rfind(" ")
+            if last_space > 0:
+                truncated = truncated[:last_space]
+            text = truncated + "..."
+
+        return text + tag_suffix

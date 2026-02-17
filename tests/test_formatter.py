@@ -88,3 +88,56 @@ class TestFormatX:
         assert len(result) <= 280
         assert "#dev" in result
         assert result.endswith("#dev")
+
+
+class TestFormatThreads:
+    def setup_method(self):
+        self.formatter = ContentFormatter()
+
+    def test_short_text_unchanged(self):
+        content = Content(content_type=ContentType.SNS, text="Hello world")
+        result = self.formatter._format_threads(content)
+        assert result == "Hello world"
+
+    def test_short_text_with_tags(self):
+        content = Content(content_type=ContentType.SNS, text="Hello", tags=["dev", "python"])
+        result = self.formatter._format_threads(content)
+        assert result == "Hello\n\n#dev #python"
+
+    def test_long_text_truncated(self):
+        content = Content(content_type=ContentType.SNS, text="a " * 300)
+        result = self.formatter._format_threads(content)
+        assert len(result) <= 500
+        assert result.endswith("...")
+
+    def test_exactly_500_chars_no_truncation(self):
+        text = "a" * 500
+        content = Content(content_type=ContentType.SNS, text=text)
+        result = self.formatter._format_threads(content)
+        assert result == text
+        assert len(result) == 500
+
+    def test_501_chars_truncated(self):
+        text = "a" * 501
+        content = Content(content_type=ContentType.SNS, text=text)
+        result = self.formatter._format_threads(content)
+        assert len(result) <= 500
+        assert result.endswith("...")
+
+    def test_word_boundary_truncation(self):
+        words = "hello world testing truncation"
+        text = (words + " ") * 30
+        content = Content(content_type=ContentType.SNS, text=text.strip())
+        result = self.formatter._format_threads(content)
+        assert len(result) <= 500
+        assert result.endswith("...")
+        without_ellipsis = result[:-3]
+        assert not without_ellipsis.endswith(" ")
+
+    def test_long_text_with_tags_fits_500(self):
+        text = "word " * 150
+        content = Content(content_type=ContentType.SNS, text=text.strip(), tags=["dev"])
+        result = self.formatter._format_threads(content)
+        assert len(result) <= 500
+        assert "#dev" in result
+        assert result.endswith("#dev")
