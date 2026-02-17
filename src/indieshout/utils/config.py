@@ -16,6 +16,8 @@ _ENV_MAPPING: dict[str, tuple[str, str]] = {
     "THREADS_USER_ID": ("threads", "user_id"),
     "YOUTUBE_CLIENT_ID": ("youtube", "client_id"),
     "YOUTUBE_CLIENT_SECRET": ("youtube", "client_secret"),
+    "AWS_ACCESS_KEY_ID": ("s3", "access_key_id"),
+    "AWS_SECRET_ACCESS_KEY": ("s3", "secret_access_key"),
     "AWS_S3_BUCKET": ("s3", "bucket_name"),
     "AWS_S3_REGION": ("s3", "region"),
 }

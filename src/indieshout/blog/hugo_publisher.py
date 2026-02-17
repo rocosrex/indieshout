@@ -5,6 +5,7 @@ from pathlib import Path
 
 from indieshout.blog.base import BaseBlogPublisher
 from indieshout.models.content import Content
+from indieshout.utils.s3_uploader import S3Uploader
 from indieshout.utils.translator import Translator
 
 
@@ -18,6 +19,15 @@ class HugoPublisher(BaseBlogPublisher):
         self.default_language = self.hugo_config.get("default_language", "ko")
         self.languages = self.hugo_config.get("languages", ["ko", "en"])
         self.translator = Translator(source_lang="ko", target_lang="en")
+
+        # S3 업로더 초기화 (S3 설정이 있을 때만)
+        self.s3_uploader = None
+        if config.get("s3", {}).get("bucket_name"):
+            try:
+                self.s3_uploader = S3Uploader(config)
+            except Exception as e:
+                print(f"Warning: S3Uploader initialization failed: {e}")
+                # S3 없이도 작동하도록 계속 진행
 
     def authenticate(self) -> bool:
         """Hugo는 인증이 필요 없음. Git 설정만 확인."""
@@ -70,9 +80,17 @@ categories: {content.categories or []}
         }
 
     def publish(self, content: Content) -> dict:
-        """마크다운 파일 생성, 번역, Git commit/push."""
+        """마크다운 파일 생성, 이미지 S3 업로드, 번역, Git commit/push."""
         formatted = self.format_content(content)
         slug = formatted["slug"]
+        markdown = formatted["markdown"]
+
+        # 이미지 S3 업로드 (있을 경우)
+        image_url_map = {}
+        if content.image_paths and self.s3_uploader:
+            image_url_map = self._upload_images_to_s3(content.image_paths, slug)
+            # 마크다운의 이미지 경로를 S3 URL로 치환
+            markdown = self._replace_image_paths(markdown, image_url_map)
 
         # 포스트 디렉토리 생성
         post_dir = self.blog_repo_path / self.content_dir / slug
@@ -80,15 +98,13 @@ categories: {content.categories or []}
 
         # 1. 한글 마크다운 파일 생성
         ko_file = post_dir / "index.ko.md"
-        ko_file.write_text(formatted["markdown"], encoding="utf-8")
+        ko_file.write_text(markdown, encoding="utf-8")
 
         # 2. 영문 번역 파일 생성
         en_file = post_dir / "index.en.md"
         if "en" in self.languages:
             try:
-                translated_markdown = self.translator.translate_markdown(
-                    formatted["markdown"]
-                )
+                translated_markdown = self.translator.translate_markdown(markdown)
                 en_file.write_text(translated_markdown, encoding="utf-8")
             except Exception as e:
                 # 번역 실패 시 경고만 출력하고 계속 진행
@@ -108,6 +124,7 @@ categories: {content.categories or []}
                 "ko": str(ko_file),
                 "en": str(en_file) if en_file.exists() else None,
             },
+            "images": image_url_map,
         }
 
     def read_post(self, file_path: Path) -> Content:
@@ -169,6 +186,60 @@ categories: {content.categories or []}
         # 날짜 추가 (중복 방지)
         date_prefix = datetime.now().strftime("%Y%m%d")
         return f"{date_prefix}-{slug}"
+
+    def _upload_images_to_s3(self, image_paths: list[str], slug: str) -> dict[str, str]:
+        """이미지들을 S3에 업로드하고 로컬 경로 → S3 URL 매핑 반환.
+
+        Args:
+            image_paths: 업로드할 이미지 경로 리스트
+            slug: 포스트 slug (S3 폴더 이름으로 사용)
+
+        Returns:
+            로컬 경로 → S3 URL 매핑 dict
+        """
+        if not self.s3_uploader:
+            return {}
+
+        url_map = {}
+        s3_prefix = f"posts/{slug}"
+
+        for image_path in image_paths:
+            try:
+                path = Path(image_path)
+                if not path.exists():
+                    print(f"Warning: Image not found: {image_path}")
+                    continue
+
+                # S3 업로드
+                s3_key = f"{s3_prefix}/{path.name}"
+                url = self.s3_uploader.upload_file(path, s3_key)
+                url_map[image_path] = url
+                print(f"✅ Image uploaded: {path.name} → {url}")
+
+            except Exception as e:
+                print(f"Warning: Failed to upload {image_path}: {e}")
+
+        return url_map
+
+    def _replace_image_paths(self, markdown: str, url_map: dict[str, str]) -> str:
+        """마크다운의 이미지 경로를 S3 URL로 치환.
+
+        Args:
+            markdown: 원본 마크다운 텍스트
+            url_map: 로컬 경로 → S3 URL 매핑
+
+        Returns:
+            이미지 경로가 치환된 마크다운
+        """
+        result = markdown
+        for local_path, s3_url in url_map.items():
+            # 마크다운 이미지 구문: ![alt](path)
+            result = result.replace(f"]({local_path})", f"]({s3_url})")
+            # HTML img 태그: <img src="path">
+            result = result.replace(f'src="{local_path}"', f'src="{s3_url}"')
+            result = result.replace(f"src='{local_path}'", f"src='{s3_url}'")
+
+        return result
 
     def _git_commit(self, slug: str, title: str) -> None:
         """Git add 및 commit."""

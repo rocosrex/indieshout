@@ -1,20 +1,26 @@
 import os
+from unittest.mock import patch
 
 from indieshout.utils.config import load_config, _inject_env_secrets
 
 
 class TestLoadConfig:
-    def test_load_from_yaml(self, tmp_path):
-        yaml_file = tmp_path / "config.yaml"
-        yaml_file.write_text(
-            "twitter:\n"
-            "  api_key: yaml_key\n"
-            "defaults:\n"
-            "  language: ko\n"
-        )
-        config = load_config(str(yaml_file))
-        assert config["twitter"]["api_key"] == "yaml_key"
-        assert config["defaults"]["language"] == "ko"
+    def test_load_from_yaml(self, tmp_path, monkeypatch):
+        # .env 파일 로드 비활성화
+        with patch("indieshout.utils.config.load_dotenv"):
+            # 환경변수 초기화 (실제 .env 파일 영향 제거)
+            monkeypatch.delenv("TWITTER_API_KEY", raising=False)
+
+            yaml_file = tmp_path / "config.yaml"
+            yaml_file.write_text(
+                "twitter:\n"
+                "  api_key: yaml_key\n"
+                "defaults:\n"
+                "  language: ko\n"
+            )
+            config = load_config(str(yaml_file))
+            assert config["twitter"]["api_key"] == "yaml_key"
+            assert config["defaults"]["language"] == "ko"
 
     def test_missing_yaml_returns_empty(self, tmp_path):
         config = load_config(str(tmp_path / "nonexistent.yaml"))
@@ -46,7 +52,10 @@ class TestInjectEnvSecrets:
         assert config["twitter"]["api_key"] == "tk"
         assert config["threads"]["app_id"] == "tid"
 
-    def test_no_env_vars_no_change(self):
+    def test_no_env_vars_no_change(self, monkeypatch):
+        # 환경변수 초기화 (실제 .env 파일 영향 제거)
+        monkeypatch.delenv("TWITTER_API_KEY", raising=False)
+
         config = {"twitter": {"api_key": "original"}}
         result = _inject_env_secrets(config)
         assert result["twitter"]["api_key"] == "original"
