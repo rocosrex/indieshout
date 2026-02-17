@@ -9,11 +9,11 @@
   - `indieshout blog publish <file>`
   - `indieshout sns post <text>` (--image, --platforms 옵션)
 
-## Phase 2: X (Twitter) 연동 (2~3일)
-- [ ] Twitter Developer Portal 앱 등록 및 API 키 발급
-- [ ] tweepy 기반 TwitterPublisher 구현
-- [ ] 텍스트 게시 + 이미지 첨부 테스트
-- [ ] 글자수 제한 자동 처리
+## Phase 2: X (Twitter) 연동 (2~3일) ✅
+- [x] Twitter Developer Portal 앱 등록 및 API 키 발급
+- [x] tweepy 기반 TwitterPublisher 구현
+- [x] 텍스트 게시 + 이미지 첨부 테스트
+- [x] 글자수 제한 자동 처리
 
 ## Phase 3: Threads 연동 (2~3일)
 - [ ] Meta Developer Portal 앱 등록
