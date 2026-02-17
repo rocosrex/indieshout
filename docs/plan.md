@@ -15,11 +15,11 @@
 - [x] 텍스트 게시 + 이미지 첨부 테스트
 - [x] 글자수 제한 자동 처리
 
-## Phase 3: Threads 연동 (2~3일)
-- [ ] Meta Developer Portal 앱 등록
-- [ ] Threads API REST 호출 구현
-- [ ] OAuth 2.0 인증 흐름 구현
-- [ ] 텍스트/이미지 게시 테스트
+## Phase 3: Threads 연동 (2~3일) ✅
+- [x] Meta Developer Portal 앱 등록
+- [x] Threads API REST 호출 구현
+- [x] OAuth 2.0 인증 흐름 구현
+- [x] 텍스트 게시 테스트 (이미지는 향후 구현)
 
 ## Phase 4: YouTube 연동 (3~4일)
 - [ ] Google Cloud Console 프로젝트 생성 및 API 활성화
