@@ -32,3 +32,4 @@ Thumbs.db
 # Secrets
 .env
 config/config.yaml
+blog-site/
