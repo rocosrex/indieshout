@@ -27,13 +27,13 @@
 - [ ] 영상/Shorts 업로드 구현
 - [ ] 제목, 설명, 태그, 썸네일 설정
 
-## Phase 5: Hugo 블로그 세팅 (3~4일)
-- [ ] Hugo 설치 및 테마 선정
-- [ ] 다국어 설정 (한글/영문) — config.toml languages 설정
-- [ ] GitHub Pages 연결 및 커스텀 도메인 설정 (Gabia DNS)
-- [ ] GitHub Actions 자동 빌드/배포 워크플로우 작성
-- [ ] S3 이미지 버킷 생성 (rex-blog-assets)
-- [ ] HugoPublisher 구현: 마크다운 파일 생성 → Git commit/push 자동화
+## Phase 5: Hugo 블로그 세팅 (3~4일) ✅
+- [x] Hugo 설치 및 테마 선정
+- [x] 다국어 설정 (한글/영문) — config.toml languages 설정
+- [x] GitHub Pages 연결 (https://rocosrex.github.io/rex-ai-chronicles/)
+- [x] GitHub Actions 자동 빌드/배포 워크플로우 작성
+- [ ] S3 이미지 버킷 생성 (rex-blog-assets) — 향후 추가
+- [x] HugoPublisher 구현: 마크다운 파일 생성 → Git commit/push 자동화
 
 ## Phase 6: 번역 자동화 (2~3일)
 - [ ] Claude Code `-p` 옵션 기반 번역 구현 (translator.py)

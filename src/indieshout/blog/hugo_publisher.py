@@ -5,6 +5,7 @@ from pathlib import Path
 
 from indieshout.blog.base import BaseBlogPublisher
 from indieshout.models.content import Content
+from indieshout.utils.translator import Translator
 
 
 class HugoPublisher(BaseBlogPublisher):
@@ -16,6 +17,7 @@ class HugoPublisher(BaseBlogPublisher):
         self.base_url = self.hugo_config.get("base_url", "https://myrestaurant.com")
         self.default_language = self.hugo_config.get("default_language", "ko")
         self.languages = self.hugo_config.get("languages", ["ko", "en"])
+        self.translator = Translator(source_lang="ko", target_lang="en")
 
     def authenticate(self) -> bool:
         """Hugo는 인증이 필요 없음. Git 설정만 확인."""
@@ -68,7 +70,7 @@ categories: {content.categories or []}
         }
 
     def publish(self, content: Content) -> dict:
-        """마크다운 파일 생성 및 Git commit/push."""
+        """마크다운 파일 생성, 번역, Git commit/push."""
         formatted = self.format_content(content)
         slug = formatted["slug"]
 
@@ -76,9 +78,22 @@ categories: {content.categories or []}
         post_dir = self.blog_repo_path / self.content_dir / slug
         post_dir.mkdir(parents=True, exist_ok=True)
 
-        # 마크다운 파일 생성 (기본 언어)
-        markdown_file = post_dir / f"index.{self.default_language}.md"
-        markdown_file.write_text(formatted["markdown"], encoding="utf-8")
+        # 1. 한글 마크다운 파일 생성
+        ko_file = post_dir / "index.ko.md"
+        ko_file.write_text(formatted["markdown"], encoding="utf-8")
+
+        # 2. 영문 번역 파일 생성
+        en_file = post_dir / "index.en.md"
+        if "en" in self.languages:
+            try:
+                translated_markdown = self.translator.translate_markdown(
+                    formatted["markdown"]
+                )
+                en_file.write_text(translated_markdown, encoding="utf-8")
+            except Exception as e:
+                # 번역 실패 시 경고만 출력하고 계속 진행
+                print(f"Warning: Translation failed: {e}")
+                # 영문 파일은 생성하지 않음
 
         # Git commit
         self._git_commit(slug, content.title)
@@ -89,7 +104,10 @@ categories: {content.categories or []}
         return {
             "slug": slug,
             "url": url,
-            "file": str(markdown_file),
+            "files": {
+                "ko": str(ko_file),
+                "en": str(en_file) if en_file.exists() else None,
+            },
         }
 
     def read_post(self, file_path: Path) -> Content:
