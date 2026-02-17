@@ -17,3 +17,23 @@ class ContentFormatter:
             text = f"{text}\n\n{hashtags}"
 
         return text
+
+    def _format_x(self, content: Content) -> str:
+        """X (Twitter) 포맷터: 280자 제한, 태그 포함."""
+        max_length = 280
+        tag_suffix = ""
+
+        if content.tags:
+            tag_suffix = "\n\n" + " ".join(f"#{tag}" for tag in content.tags)
+
+        available = max_length - len(tag_suffix)
+        text = content.text
+
+        if len(text) > available:
+            truncated = text[: available - 3]
+            last_space = truncated.rfind(" ")
+            if last_space > 0:
+                truncated = truncated[:last_space]
+            text = truncated + "..."
+
+        return text + tag_suffix

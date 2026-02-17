@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, patch
+
 from click.testing import CliRunner
 
 from indieshout.main import cli
@@ -52,3 +54,20 @@ class TestCli:
     def test_blog_publish_missing_file(self):
         result = self.runner.invoke(cli, ["blog", "publish", "nonexistent.md"])
         assert result.exit_code != 0
+
+    def test_sns_post_no_dry_run(self):
+        mock_publisher = MagicMock()
+        mock_publisher.authenticate.return_value = True
+        mock_publisher.validate.return_value = True
+        mock_publisher.publish.return_value = {"tweet_id": "123", "url": "https://x.com/i/status/123"}
+        mock_cls = MagicMock(return_value=mock_publisher)
+
+        with patch.dict("indieshout.main.PLATFORM_PUBLISHERS", {"x": mock_cls}):
+            result = self.runner.invoke(
+                cli, ["sns", "post", "Hello!", "--platforms", "x", "--no-dry-run"]
+            )
+        assert result.exit_code == 0
+        assert "게시 완료" in result.output
+        mock_publisher.authenticate.assert_called_once()
+        mock_publisher.validate.assert_called_once()
+        mock_publisher.publish.assert_called_once()
