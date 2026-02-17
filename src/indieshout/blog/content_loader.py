@@ -75,11 +75,15 @@ class ContentLoader:
             )
             image_paths = [str(f) for f in image_files if f.is_file()]
 
+        # 폴더명에서 5자리 숫자 prefix 제거 (예: 00001-my-post → my-post)
+        slug = self._remove_number_prefix(folder_name)
+
         # Content 객체 생성 (블로그용)
         blog_content = Content(
             content_type=ContentType.BLOG,
             title=meta_data.get("title", folder_name),
             text=content_text,
+            slug=slug,
             tags=meta_data.get("tags", []),
             categories=meta_data.get("categories", []),
             image_paths=image_paths if image_paths else None,
@@ -157,3 +161,18 @@ class ContentLoader:
             for f in self.blog_content_dir.iterdir()
             if f.is_dir() and not f.name.startswith(".")
         ]
+
+    def _remove_number_prefix(self, folder_name: str) -> str:
+        """폴더명에서 5자리 숫자 prefix 제거.
+
+        Args:
+            folder_name: 폴더 이름 (예: 00001-my-post)
+
+        Returns:
+            숫자가 제거된 이름 (예: my-post)
+        """
+        # 5자리 숫자 + 하이픈 패턴 제거
+        match = re.match(r"^\d{5}-(.+)$", folder_name)
+        if match:
+            return match.group(1)
+        return folder_name

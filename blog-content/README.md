@@ -6,11 +6,16 @@
 
 ```
 blog-content/
-  {블로그-제목}/
-    content.md    # 블로그 본문 (마크다운)
-    meta.md       # SNS 텍스트 + 메타데이터
-    assets/       # 이미지들 (번호순: 1.jpg, 2.png, ...)
+  {00001-블로그-제목}/   # 5자리 숫자 prefix (관리용)
+    content.md          # 블로그 본문 (마크다운)
+    meta.md             # SNS 텍스트 + 메타데이터
+    assets/             # 이미지들 (번호순: 1.jpg, 2.png, ...)
 ```
+
+**폴더명 규칙:**
+- 5자리 숫자 + 하이픈 + 제목 (예: `00001-my-first-post`)
+- 숫자는 관리 목적으로만 사용, 실제 게시 시 자동 제거
+- 블로그 URL: `https://xxx.com/posts/my-first-post/` (숫자 없음)
 
 ## meta.md 형식
 
@@ -105,6 +110,20 @@ indieshout blog publish-folder my-first-post --skip-sns
 
 ## 팁
 
-- 폴더명은 URL에 포함되므로 영문 권장 (예: `my-first-post`)
-- 이미지는 되도록 번호순으로 정리 (1.jpg, 2.png, ...)
+- **폴더명**: `00001-my-first-post` 형식 (5자리 숫자로 관리)
+- **실제 URL**: 숫자는 자동 제거되어 `/posts/my-first-post/`로 게시
+- 이미지는 번호순으로 정리 (1.jpg, 2.png, ...)
 - meta.md의 platforms 필드로 게시할 SNS 선택 가능
+
+## 예시
+
+```bash
+# 폴더 생성
+mkdir -p blog-content/00001-my-first-post/assets
+
+# 게시
+indieshout blog publish-folder 00001-my-first-post
+
+# 결과
+# → 블로그 URL: https://xxx.com/posts/my-first-post/
+```

@@ -165,3 +165,29 @@ def test_image_sorting_by_number(temp_blog_dir):
     assert "1.jpg" in paths[0]
     assert "2.jpg" in paths[1]
     assert "10.jpg" in paths[2]
+
+
+def test_remove_number_prefix(temp_blog_dir):
+    """폴더명에서 5자리 숫자 prefix 제거."""
+    loader = ContentLoader(temp_blog_dir)
+
+    assert loader._remove_number_prefix("00001-my-post") == "my-post"
+    assert loader._remove_number_prefix("12345-another-post") == "another-post"
+    assert loader._remove_number_prefix("99999-test") == "test"
+    assert loader._remove_number_prefix("no-prefix") == "no-prefix"
+    assert loader._remove_number_prefix("001-short") == "001-short"  # 3자리는 제거 안 함
+
+
+def test_load_with_number_prefix(temp_blog_dir):
+    """숫자 prefix가 있는 폴더 로드 시 slug에서 숫자 제거."""
+    folder = temp_blog_dir / "00001-test-post"
+    folder.mkdir()
+    (folder / "content.md").write_text("# test")
+    (folder / "meta.md").write_text("title: Test Post\n---\ntext")
+
+    loader = ContentLoader(temp_blog_dir)
+    data = loader.load_from_folder("00001-test-post")
+
+    # slug에서 숫자가 제거됨
+    assert data["blog_content"].slug == "test-post"
+    assert data["blog_content"].title == "Test Post"

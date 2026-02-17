@@ -12,14 +12,15 @@ from indieshout.publishers.twitter import TwitterPublisher
 class PublishWorkflow:
     """블로그 + SNS 통합 게시 워크플로우."""
 
-    def __init__(self, config: dict):
+    def __init__(self, config: dict, blog_content_dir: str | Path = "blog-content"):
         """PublishWorkflow 초기화.
 
         Args:
             config: 설정 dict
+            blog_content_dir: blog-content 디렉토리 경로
         """
         self.config = config
-        self.content_loader = ContentLoader()
+        self.content_loader = ContentLoader(blog_content_dir)
         self.hugo_publisher = HugoPublisher(config)
 
         # SNS 퍼블리셔 초기화
