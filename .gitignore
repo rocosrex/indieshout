@@ -33,3 +33,4 @@ Thumbs.db
 .env
 config/config.yaml
 blog-site/
+/blog-contents
