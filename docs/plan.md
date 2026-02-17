@@ -35,10 +35,10 @@
 - [ ] S3 이미지 버킷 생성 (rex-blog-assets) — 향후 추가
 - [x] HugoPublisher 구현: 마크다운 파일 생성 → Git commit/push 자동화
 
-## Phase 6: 번역 자동화 (2~3일)
-- [ ] Claude Code `-p` 옵션 기반 번역 구현 (translator.py)
-- [ ] 한글 마크다운 → 영문 마크다운 자동 변환
-- [ ] Front matter (제목, 태그 등) 자동 번역
+## Phase 6: 번역 자동화 (2~3일) ✅
+- [x] Claude Code `-p` 옵션 기반 번역 구현 (translator.py)
+- [x] 한글 마크다운 → 영문 마크다운 자동 변환
+- [x] Front matter (제목, 태그 등) 자동 번역
 
 ## Phase 7: 통합 및 마무리 (2~3일)
 - [ ] 멀티 퍼블리셔 오케스트레이터 완성 (SNS + 블로그 통합)
