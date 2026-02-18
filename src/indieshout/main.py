@@ -6,6 +6,7 @@ from indieshout.publishers.threads import ThreadsPublisher
 from indieshout.publishers.twitter import TwitterPublisher
 from indieshout.utils.config import load_config
 from indieshout.utils.logger import setup_logger
+from indieshout.workflows.publish_workflow import PublishWorkflow
 
 PLATFORM_PUBLISHERS = {
     "x": TwitterPublisher,
@@ -64,6 +65,67 @@ def publish(ctx: click.Context, file: str, platforms: str | None) -> None:
     click.echo(f"플랫폼: {platform_list or '(전체)'}")
     click.echo(f"본문 길이: {len(text)}자")
     click.echo(f"포맷된 텍스트:\n{formatted[:200]}{'...' if len(formatted) > 200 else ''}")
+
+
+@blog.command("publish-folder")
+@click.argument("folder_name")
+@click.option("--dry-run/--no-dry-run", default=False, help="Dry-run 모드 (기본: 비활성)")
+@click.option("--skip-blog", is_flag=True, help="블로그 게시 건너뛰기")
+@click.option("--skip-sns", is_flag=True, help="SNS 게시 건너뛰기")
+@click.pass_context
+def publish_folder(
+    ctx: click.Context,
+    folder_name: str,
+    dry_run: bool,
+    skip_blog: bool,
+    skip_sns: bool,
+) -> None:
+    """blog-content 폴더에서 블로그 + SNS 통합 게시.
+
+    폴더 구조:
+        blog-content/{folder_name}/
+            content.md    # 블로그 본문
+            meta.md       # SNS 텍스트 + 메타데이터
+            assets/       # 이미지들 (1.jpg, 2.png, ...)
+
+    예시:
+        indieshout blog publish-folder my-first-post
+        indieshout blog publish-folder my-first-post --dry-run
+        indieshout blog publish-folder my-first-post --skip-sns
+    """
+    config = ctx.obj["config"]
+
+    try:
+        workflow = PublishWorkflow(config)
+        result = workflow.publish_from_folder(
+            folder_name,
+            dry_run=dry_run,
+            skip_blog=skip_blog,
+            skip_sns=skip_sns,
+        )
+
+        # 성공 여부 확인
+        if result.get("blog") or skip_blog:
+            click.echo("\n✅ 작업 완료!")
+        else:
+            click.echo("\n❌ 작업 실패")
+            exit(1)
+
+    except FileNotFoundError as e:
+        click.echo(f"❌ 오류: {e}")
+        click.echo("\n💡 팁: blog-content 폴더 구조를 확인하세요:")
+        click.echo("  blog-content/")
+        click.echo("    {folder_name}/")
+        click.echo("      content.md")
+        click.echo("      meta.md")
+        click.echo("      assets/")
+        exit(1)
+    except Exception as e:
+        click.echo(f"❌ 예상치 못한 오류: {e}")
+        import traceback
+
+        traceback.print_exc()
+        exit(1)
 
 
 @cli.group()
